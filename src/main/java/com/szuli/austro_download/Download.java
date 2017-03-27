@@ -6,18 +6,26 @@ import java.io.InputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.net.ssl.SSLContext;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.http.client.CookieStore;
+import org.apache.http.client.params.ClientPNames;
+import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.ssl.SSLContexts;
 
 import com.mashape.unirest.http.HttpResponse;
@@ -43,19 +51,22 @@ public class Download {
 			System.out.println("  Creating Weather Briefing  ");
 			System.out.println("=============================\n\n");
 			String authToken = login();
-			//downloadGAFOR(authToken);
-			//downloadTextForecastDanube();
-			download_METAR_OESTERREICH_NORDOST();
-			download_METAR_OESTERREICH_SUD();
-			download_METAR_OESTERREICH_WEST();
-			download_METAR_Ungarn();
-			download_METAR_Slovenia();
-			download_TAF_OESTERREICH_NORDOST();
-			download_TAF_OESTERREICH_SUD();
-			download_TAF_OESTERREICH_WEST();
-			download_TAF_Ungarn();
-			download_TAF_Slovenia();
-		
+			if (authToken != null && !authToken.trim().equals("")) {
+				//downloadGAFOR(authToken);
+				//downloadTextForecastDanube();
+				download_METAR_OESTERREICH_NORDOST();
+				download_METAR_OESTERREICH_SUD();
+				download_METAR_OESTERREICH_WEST();
+				download_METAR_Ungarn();
+				download_METAR_Slovenia();
+				download_TAF_OESTERREICH_NORDOST();
+				download_TAF_OESTERREICH_SUD();
+				download_TAF_OESTERREICH_WEST();
+				download_TAF_Ungarn();
+				download_TAF_Slovenia();
+			} else {
+				System.err.println("Login failed");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -163,17 +174,15 @@ public class Download {
 		fos.close();
 	}
 
+	
 	public String login() throws Exception {
-		SSLContext sslcontext = SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build();
+		CookieStore cookieStore = new BasicCookieStore();
 
-		SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext,
-				SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-		CookieStore cookieStore = new org.apache.http.impl.client.BasicCookieStore();
-		CloseableHttpClient httpclient = HttpClients.custom().setDefaultCookieStore(cookieStore)
-				.setSSLSocketFactory(sslsf).build();
-
-		Unirest.setHttpClient(httpclient);
-		Unirest.clearDefaultHeaders();
+		DefaultHttpClient httpClient = new DefaultHttpClient();
+		httpClient.getParams().setParameter(ClientPNames.COOKIE_POLICY,CookiePolicy.BROWSER_COMPATIBILITY);
+		httpClient.setCookieStore(cookieStore);
+		Unirest.setHttpClient(httpClient);
+		
 		printCookies(cookieStore);
 
 		// GET START SITE
@@ -183,7 +192,6 @@ public class Download {
 
 		// LOGIN
 		Map<String, Object> loginData = new HashMap<String, Object>();
-		loginData.put("back", "http://www.austrocontrol.at/flugwetter/start.php");
 		loginData.put("lang", "en");
 		loginData.put("username", ConfigFile.getInstance().getUsername());
 		loginData.put("password", ConfigFile.getInstance().getPassword());
@@ -191,23 +199,66 @@ public class Download {
 		for (String key : loginData.keySet()) {
 			loginBody += key + "=" + loginData.get(key) + "&";
 		}
-		System.out.println("Data --> " + URLEncoder.encode(loginBody, Charset.defaultCharset().name()));
-
+		System.out.println("Data --> " + loginBody);
+		loginBody = "lang=en&username=3fly.at&password=Weflyhigh%241";
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Content-Type", "application/x-www-form-urlencoded");
-		headers.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-		headers.put("Cache-Control", "no-cache");
-		headers.put("Cookie", "");
-		response = Unirest.post("https://www.austrocontrol.at/flugwetter/acglogin.cgi").headers(headers).body(loginBody)
-				.asString();
-		printResponse("Login", response);
+		headers.put("Referer", "https://www.austrocontrol.at/flugwetter/start.php?back=https://www.austrocontrol.at/flugwetter/index.php?id=470&lang=en");
+		
+		headers.put("Cookie", "auth_probe=1;");
+		cookieStore.addCookie(createAuthCookie(cookieStore));
+		System.out.println("Cookies before login");
 		printCookies(cookieStore);
-
+		response = Unirest.post("https://www.austrocontrol.at/flugwetter/acglogin.cgi").headers(headers).fields(loginData).asString();
+		printResponse("Login", response);
+		System.out.println("Cookies after login");
+		printCookies(cookieStore);
+		
 		String authToken = URLDecoder.decode(getCookieByName("auth_tkt", cookieStore), Charset.defaultCharset().name());
 		System.out.println("Authentication token --> " + authToken);
 		return authToken;
 	}
 
+	
+	/**
+	 * Creates a cookie auth_probe=1. Austrocontrol seems to only allow the login if this cookie is submitted as well
+	 * @param cookieStore
+	 * @return
+	 */
+	public Cookie createAuthCookie(CookieStore cookieStore) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DAY_OF_YEAR, 100);
+		Date date = calendar.getTime();
+		BasicClientCookie cookie = new BasicClientCookie("auth_probe", "1");
+		cookie.setDomain("www.austrocontrol.at");
+		cookie.setExpiryDate(date);
+		cookie.setPath("/");
+		return cookie;
+	}
+
+	
+	/**
+	 * Serializes the cookies into a string
+	 * @param cookieStore
+	 * @return
+	 */
+	public String cookies2String(CookieStore cookieStore) {
+		String cookieString = "";
+		List<Cookie> cookies = cookieStore.getCookies();
+		for (int i = 0; i < cookies.size(); i++) {
+			Cookie cookie = cookies.get(i);
+			String name = cookie.getName();
+			String value = cookie.getValue();
+			cookieString += name + "=" + value;
+			if (i < cookies.size() - 1) {
+				cookieString += "; ";
+			}
+		}
+		System.out.println("COOKIES --> " + cookieString);
+		return cookieString;
+	}
+
+	
 	public void printCookies(CookieStore cookieStore) {
 		System.out.println("=====================================================");
 		System.out.println("      PRINTING COOKIES..\n\n");
@@ -231,13 +282,13 @@ public class Download {
 		System.out.println("=====================================================");
 		System.out.println("              " + topic.toUpperCase() + "\n\n");
 		System.out.println("Status --> " + response.getStatus() + "/" + response.getStatusText());
-		System.out.println("Body --> " + response.getBody());
+		//System.out.println("Body --> " + response.getBody());
 		System.out.println("Headers --> " + response.getHeaders().entrySet());
 		System.out.println("=====================================================");
 	}
 
-	public static final void main(String[] args) {
+	/*public static final void main(String[] args) {
 		Download d = new Download();
 		d.createBriefingPack();
-	}
+	}*/
 }

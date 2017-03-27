@@ -10,10 +10,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class BriefingCreator {
+public class CreateBriefingPack {
 
 	
-	public BriefingCreator() {
+	public CreateBriefingPack() {
 	}
 	
 	
@@ -37,7 +37,7 @@ public class BriefingCreator {
 
 	
 	public static void main(String[] args) {
-		BriefingCreator b = new BriefingCreator();
+		CreateBriefingPack b = new CreateBriefingPack();
 		try {
 			b.cleanHTML(new File("METAR_Hungary.html"));
 		} catch (Exception e) {
