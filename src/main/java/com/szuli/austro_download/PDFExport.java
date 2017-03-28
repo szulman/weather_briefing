@@ -7,6 +7,8 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
+
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
@@ -15,7 +17,9 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.szuli.austro_download.briefing.Briefing;
 import com.szuli.austro_download.briefing.BriefingPack;
+import com.szuli.austro_download.briefing.PDFBriefing;
 import com.szuli.austro_download.briefing.TextBriefing;
+
 
 public class PDFExport {
 
@@ -31,9 +35,24 @@ public class PDFExport {
 	public static void briefingPack2PDF(BriefingPack briefingPack, File pdf) throws Exception {
 		//TEXT (METAR, TAF,..) --> PDF
 		List<TextBriefing> textBriefings = getTextBriefings(briefingPack);
-		text2PDF(textBriefings, pdf);
+		File textPDF = File.createTempFile("austro_download", "_textBriefings.pdf");
+		textPDF.deleteOnExit();
+		text2PDF(textBriefings, textPDF);
+		List<PDFBriefing> pdfBriefings = getPDFBriefings(briefingPack);
+		pdfMerge(pdfBriefings, textPDF, pdf);
 	}
 	
+	
+	public static void pdfMerge(List<PDFBriefing> pdfBriefings, File in, File out) throws Exception {
+		PDFMergerUtility merge = new PDFMergerUtility();
+		merge.addSource(in);
+		for (PDFBriefing briefing : pdfBriefings) {
+			merge.addSource(briefing.getBriefingFile());
+		}
+		merge.setDestinationFileName(out.getAbsolutePath());
+		merge.mergeDocuments();
+	}
+
 	
 	public static void text2PDF(List<TextBriefing> textBriefings, File out) throws Exception {
 		Document document = new Document();
@@ -57,6 +76,22 @@ public class PDFExport {
 		document.close();
 	}
 
+
+	/**
+	 * Returns all text-based briefings (e.g. TAF, METAR,..)
+	 * @param briefingPack
+	 * @param pdf
+	 */
+	public static List<PDFBriefing> getPDFBriefings(BriefingPack briefingPack) {
+		List<PDFBriefing> pdfBriefings = new ArrayList<PDFBriefing>();
+		for (Briefing briefing: briefingPack.getBriefings().values()) {
+			if (briefing instanceof PDFBriefing) {
+				pdfBriefings.add((PDFBriefing) briefing);
+			}
+		}
+		return pdfBriefings;
+	}
+	
 	
 	/**
 	 * Returns all text-based briefings (e.g. TAF, METAR,..)
@@ -72,18 +107,5 @@ public class PDFExport {
 		}
 		return textBriefings;
 	}
-	
-	
-	/*public void html2PDF(File in, File out) throws Exception {
-		// String k = "<html><body> This is my Project </body></html>";
-		String inHTML = FileUtils.readFileToString(in, Charset.defaultCharset());
-		OutputStream file = new FileOutputStream(out);
-		Document document = new Document();
-		PdfWriter.getInstance(document, file);
-		document.open();
-		HTMLWorker htmlWorker = new HTMLWorker(document);
-		htmlWorker.parse(new StringReader(inHTML));
-		document.close();
-		file.close();
-	}*/
+
 }
