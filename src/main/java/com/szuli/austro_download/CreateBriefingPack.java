@@ -37,48 +37,46 @@ import com.szuli.austro_download.config.ConfigFile;
  */
 public class CreateBriefingPack {
 
-
 	private String authToken = "";
-	
+
 	public CreateBriefingPack() {
 	}
 
+	public void createBriefingPack() throws Exception {
+		BriefingPack bp = downloadBriefingPack();
+		PDFExport.briefingPack2PDF(bp, new File("/tmp/briefing_pack.pdf"));
+	}
+
 	
-	public BriefingPack createBriefingPack() {
+	public BriefingPack downloadBriefingPack() throws Exception {
 		BriefingPack bp = new BriefingPack();
-		try {
-			System.out.println("=============================");
-			System.out.println("  Creating Weather Briefing  ");
-			System.out.println("=============================\n\n");
-			String authToken = login();
-			if (authToken != null && !authToken.trim().equals("")) {
-				bp.addBriefing(downloadGAFOR(authToken));
-				bp.addBriefing(downloadTextForecastDanube());
-				bp.addBriefing(download_METAR_OESTERREICH_NORDOST());
-				bp.addBriefing(download_METAR_OESTERREICH_SUD());
-				bp.addBriefing(download_METAR_OESTERREICH_WEST());
-				bp.addBriefing(download_METAR_Ungarn());
-				bp.addBriefing(download_METAR_Slovenia());
-				bp.addBriefing(download_TAF_OESTERREICH_NORDOST());
-				bp.addBriefing(download_TAF_OESTERREICH_SUD());
-				bp.addBriefing(download_TAF_OESTERREICH_WEST());
-				bp.addBriefing(download_TAF_Ungarn());
-				bp.addBriefing(download_TAF_Slovenia());
-			} else {
-				System.err.println("Login failed");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		System.out.println("=============================");
+		System.out.println("  Creating Weather Briefing  ");
+		System.out.println("=============================\n\n");
+		String authToken = login();
+		if (authToken != null && !authToken.trim().equals("")) {
+			bp.addBriefing(downloadGAFOR(authToken));
+			bp.addBriefing(downloadTextForecastDanube());
+			bp.addBriefing(download_METAR_OESTERREICH_NORDOST());
+			bp.addBriefing(download_METAR_OESTERREICH_SUD());
+			bp.addBriefing(download_METAR_OESTERREICH_WEST());
+			bp.addBriefing(download_METAR_Ungarn());
+			bp.addBriefing(download_METAR_Slovenia());
+			bp.addBriefing(download_TAF_OESTERREICH_NORDOST());
+			bp.addBriefing(download_TAF_OESTERREICH_SUD());
+			bp.addBriefing(download_TAF_OESTERREICH_WEST());
+			bp.addBriefing(download_TAF_Ungarn());
+			bp.addBriefing(download_TAF_Slovenia());
+		} else {
+			throw new Exception("Login failed");
 		}
 		return bp;
 	}
 
-
 	public TAFBriefing download_TAF(String briefingName, String baseURL) throws Exception {
 		return new TAFBriefing(briefingName, download_METAR(briefingName, baseURL).getBriefingFile());
 	}
-	
-	
+
 	public METARBriefing download_METAR(String briefingName, String baseURL) throws Exception {
 		String url = baseURL + System.currentTimeMillis() / 1000;
 		HttpResponse<String> response = Unirest.get(url).asString();
@@ -88,83 +86,73 @@ public class CreateBriefingPack {
 		FileUtils.write(metarFile, forecast, Charset.defaultCharset());
 		return new METARBriefing(briefingName, metarFile);
 	}
-	
 
 	public METARBriefing download_METAR_OESTERREICH_NORDOST() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=SA-OESTERREICH-NORDOST&tstamp=";
 		return download_METAR("METAR Austria North-East", url);
 	}
-	
 
 	public TAFBriefing download_TAF_OESTERREICH_NORDOST() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=TAF-OESTERREICH-NORDOST&tstamp=";
 		return download_TAF("TAF Austria North-East", url);
 	}
-	
-	
+
 	public METARBriefing download_METAR_Ungarn() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=SA-UNGARN&tstamp=";
 		return download_METAR("METAR Hungary", url);
 	}
-	
-	
+
 	public TAFBriefing download_TAF_Ungarn() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=TAF-UNGARN&tstamp=";
 		return download_TAF("TAF Hungary", url);
 	}
-	
-	
+
 	public METARBriefing download_METAR_OESTERREICH_SUD() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=SA-OESTERREICH-SUED&tstamp=";
 		return download_METAR("METAR Austria South", url);
 	}
-	
 
 	public TAFBriefing download_TAF_OESTERREICH_SUD() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=TAF-OESTERREICH-SUED&tstamp=";
 		return download_TAF("TAF Austria South", url);
 	}
-	
 
 	public TAFBriefing download_TAF_OESTERREICH_WEST() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=TAF-OESTERREICH-WEST&tstamp=";
-		return download_TAF("TAF Austria West", url);	
+		return download_TAF("TAF Austria West", url);
 	}
-	
-	
+
 	public METARBriefing download_METAR_OESTERREICH_WEST() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=SA-OESTERREICH-WEST&tstamp=";
-		return download_METAR("METAR Austria West", url);	
+		return download_METAR("METAR Austria West", url);
 	}
-	
 
 	public METARBriefing download_METAR_Slovenia() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=SA-SLOWENIEN&tstamp=";
 		return download_METAR("METAR Slovenia", url);
 	}
-	
-	
+
 	public TAFBriefing download_TAF_Slovenia() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=TAF-SLOWENIEN&tstamp=";
 		return download_TAF("TAF Slovenia", url);
 	}
-	
-	
+
 	/**
 	 * Downloads the textual weather forecast for the danube area
 	 */
 	public ForecastBriefing downloadTextForecastDanube() throws Exception {
-		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=FXOS41&tstamp=" + System.currentTimeMillis() / 1000;
+		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=FXOS41&tstamp="
+				+ System.currentTimeMillis() / 1000;
 		String briefingName = "Forecast Danube Area";
 		return new ForecastBriefing(briefingName, download_METAR(briefingName, url).getBriefingFile());
 	}
-	
-	
+
 	/**
 	 * Download GAFOR as PDF from Austro Control
 	 */
 	public GAFORBriefing downloadGAFOR(String authToken) throws Exception {
-		String url = "https://www.austrocontrol.at/flugwetter/products/chartloop/gafor.pdf" + "?mtime=" + System.currentTimeMillis() / 1000 + "&auth_tkt=" + authToken;
+		String url = "https://www.austrocontrol.at/flugwetter/products/chartloop/gafor.pdf" + "?mtime="
+				+ System.currentTimeMillis() / 1000 + "&auth_tkt=" + authToken;
 		System.out.println("URL --> " + url);
 		HttpResponse<InputStream> gafor = Unirest.get(url).asBinary();
 		File gaforFile = File.createTempFile("austro_weather", "_gafor.pdf");
@@ -179,27 +167,26 @@ public class CreateBriefingPack {
 		return new GAFORBriefing("GAFOR Austria", gaforFile);
 	}
 
-	
 	public String login() throws Exception {
 		if (authToken != null && authToken.length() > 1) {
 			System.out.println("Already logged in.");
 			return authToken;
 		}
-		
+
 		CookieStore cookieStore = new BasicCookieStore();
 
 		DefaultHttpClient httpClient = new DefaultHttpClient();
-		httpClient.getParams().setParameter(ClientPNames.COOKIE_POLICY,CookiePolicy.BROWSER_COMPATIBILITY);
+		httpClient.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY);
 		httpClient.setCookieStore(cookieStore);
 		Unirest.setHttpClient(httpClient);
-		
+
 		printCookies(cookieStore);
 
 		// GET START SITE
 		HttpResponse<String> response = Unirest.get("https://www.austrocontrol.at/flugwetter/start.php").asString();
 		printResponse("Get Startsite", response);
 		printCookies(cookieStore);
-		
+
 		// LOGIN
 		Map<String, Object> loginData = new HashMap<String, Object>();
 		loginData.put("lang", "en");
@@ -212,23 +199,26 @@ public class CreateBriefingPack {
 		System.out.println("Data --> " + loginBody);
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Content-Type", "application/x-www-form-urlencoded");
-		headers.put("Referer", "https://www.austrocontrol.at/flugwetter/start.php?back=https://www.austrocontrol.at/flugwetter/index.php?id=470&lang=en");
+		headers.put("Referer",
+				"https://www.austrocontrol.at/flugwetter/start.php?back=https://www.austrocontrol.at/flugwetter/index.php?id=470&lang=en");
 		headers.put("Cookie", "auth_probe=1;");
 		System.out.println("Cookies before login");
 		printCookies(cookieStore);
-		response = Unirest.post("https://www.austrocontrol.at/flugwetter/acglogin.cgi").headers(headers).fields(loginData).asString();
+		response = Unirest.post("https://www.austrocontrol.at/flugwetter/acglogin.cgi").headers(headers)
+				.fields(loginData).asString();
 		printResponse("Login", response);
 		System.out.println("Cookies after login");
 		printCookies(cookieStore);
-		
+
 		String authToken = URLDecoder.decode(getCookieByName("auth_tkt", cookieStore), Charset.defaultCharset().name());
 		System.out.println("Authentication token --> " + authToken);
 		return authToken;
 	}
 
-	
 	/**
-	 * Creates a cookie auth_probe=1. Austrocontrol seems to only allow the login if this cookie is submitted as well
+	 * Creates a cookie auth_probe=1. Austrocontrol seems to only allow the
+	 * login if this cookie is submitted as well
+	 * 
 	 * @param cookieStore
 	 * @return
 	 */
@@ -243,9 +233,9 @@ public class CreateBriefingPack {
 		return cookie;
 	}
 
-	
 	/**
 	 * Serializes the cookies into a string
+	 * 
 	 * @param cookieStore
 	 * @return
 	 */
@@ -265,7 +255,6 @@ public class CreateBriefingPack {
 		return cookieString;
 	}
 
-	
 	public void printCookies(CookieStore cookieStore) {
 		System.out.println("=====================================================");
 		System.out.println("      PRINTING COOKIES..\n\n");
@@ -289,13 +278,13 @@ public class CreateBriefingPack {
 		System.out.println("=====================================================");
 		System.out.println("              " + topic.toUpperCase() + "\n\n");
 		System.out.println("Status --> " + response.getStatus() + "/" + response.getStatusText());
-		//System.out.println("Body --> " + response.getBody());
+		// System.out.println("Body --> " + response.getBody());
 		System.out.println("Headers --> " + response.getHeaders().entrySet());
 		System.out.println("=====================================================");
 	}
 
-	/*public static final void main(String[] args) {
-		Download d = new Download();
-		d.createBriefingPack();
-	}*/
+	/*
+	 * public static final void main(String[] args) { Download d = new
+	 * Download(); d.createBriefingPack(); }
+	 */
 }

@@ -1,7 +1,5 @@
 package com.szuli.austro_download;
 
-import java.io.File;
-
 public class Main {
 
 	
@@ -10,13 +8,13 @@ public class Main {
 	
 	
 	public void start() {
-		try {
+		/*try {
 			PDFExport pdf = new PDFExport();
 			pdf.text2PDF(new File("METAR_Hungary.txt"), new File("hello.pdf"));
 			//	pdf.html2PDF(new File("METAR_Hungary.txt"), new File("hello.pdf"));
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 	
 	

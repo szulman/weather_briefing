@@ -6,6 +6,7 @@ import java.nio.charset.Charset;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.szuli.austro_download.briefing.Briefing;
@@ -21,7 +22,7 @@ public class CreateBriefingPackTest {
 
 	
 	@Test
-	public void testLogin() {
+	public void login() {
 		CreateBriefingPack c = new CreateBriefingPack();
 		try {
 			String authToken = c.login();
@@ -32,12 +33,24 @@ public class CreateBriefingPackTest {
 		}
 	}
 	
-	
 	@Test
-	public void testCreateBriefingPack() {
+	public void createBriefingPack() {
 		CreateBriefingPack c = new CreateBriefingPack();
 		try {
-			BriefingPack bp = c.createBriefingPack();
+			c.createBriefingPack();
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+	}
+	
+	
+	@Test
+	@Ignore
+	public void downloadBriefingPack() {
+		CreateBriefingPack c = new CreateBriefingPack();
+		try {
+			BriefingPack bp = c.downloadBriefingPack();
 			Assert.assertTrue(bp.getBriefings().size() > 5);
 			Briefing metarHungary = bp.getBriefing("METAR Hungary");
 			Assert.assertNotNull(metarHungary);
