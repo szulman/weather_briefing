@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,21 +11,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.net.ssl.SSLContext;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.params.CookiePolicy;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.cookie.BasicClientCookie;
-import org.apache.http.ssl.SSLContexts;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -159,9 +151,7 @@ public class Download {
 	 * Download GAFOR as PDF from Austro Control
 	 */
 	public void downloadGAFOR(String authToken) throws Exception {
-
-		String url = "https://www.austrocontrol.at/flugwetter/products/chartloop/gafor.pdf" + "?mtime="
-				+ System.currentTimeMillis() / 1000 + "&auth_tkt=" + authToken;
+		String url = "https://www.austrocontrol.at/flugwetter/products/chartloop/gafor.pdf" + "?mtime=" + System.currentTimeMillis() / 1000 + "&auth_tkt=" + authToken;
 		System.out.println("URL --> " + url);
 		HttpResponse<InputStream> gafor = Unirest.get(url).asBinary();
 		String filePath = "gafor.pdf";
@@ -189,7 +179,7 @@ public class Download {
 		HttpResponse<String> response = Unirest.get("https://www.austrocontrol.at/flugwetter/start.php").asString();
 		printResponse("Get Startsite", response);
 		printCookies(cookieStore);
-
+		
 		// LOGIN
 		Map<String, Object> loginData = new HashMap<String, Object>();
 		loginData.put("lang", "en");
@@ -200,13 +190,10 @@ public class Download {
 			loginBody += key + "=" + loginData.get(key) + "&";
 		}
 		System.out.println("Data --> " + loginBody);
-		loginBody = "lang=en&username=3fly.at&password=Weflyhigh%241";
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Content-Type", "application/x-www-form-urlencoded");
 		headers.put("Referer", "https://www.austrocontrol.at/flugwetter/start.php?back=https://www.austrocontrol.at/flugwetter/index.php?id=470&lang=en");
-		
 		headers.put("Cookie", "auth_probe=1;");
-		cookieStore.addCookie(createAuthCookie(cookieStore));
 		System.out.println("Cookies before login");
 		printCookies(cookieStore);
 		response = Unirest.post("https://www.austrocontrol.at/flugwetter/acglogin.cgi").headers(headers).fields(loginData).asString();

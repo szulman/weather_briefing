@@ -17,29 +17,15 @@ public class CreateBriefingPack {
 	}
 	
 	
-	public String cleanHTML(File in) throws Exception {
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		Document doc = dBuilder.parse(in);
-
-		//optional, but recommended
-		//read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
-		doc.getDocumentElement().normalize();
-
-		System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-
-		NodeList metarBodyList = doc.getElementsByTagName("p");
-		Node metarBody = metarBodyList.item(0);
-		String rawContent = metarBody.getTextContent();
-		System.out.println("METARS --> " + rawContent);
-		return rawContent;
+	public void createBriefingPack() {
+		
+		
+		
 	}
-
-	
 	public static void main(String[] args) {
 		CreateBriefingPack b = new CreateBriefingPack();
 		try {
-			b.cleanHTML(new File("METAR_Hungary.html"));
+			b.createBriefingPack();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

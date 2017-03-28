@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 
-public class TestConfig {
+public class ConfigTest {
 
 	
 	@Test
