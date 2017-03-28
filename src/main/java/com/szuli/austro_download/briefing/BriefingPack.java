@@ -1,21 +1,32 @@
 package com.szuli.austro_download.briefing;
 
-import java.io.File;
-import java.io.IOException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BriefingPack {
 
 	
+	private List<Briefing> briefings = new ArrayList<Briefing>();
+	
 	
 	public BriefingPack() {
 	}
-	
 
+	
+	public void addBriefing(Briefing briefing) {
+		if (briefings == null) {
+			briefings = new ArrayList<Briefing>();
+		}
+		briefings.add(briefing);
+	}
+
+	
+	public List<Briefing> getBriefings() {
+		return briefings;
+	}
+	
+	
+	public void setBriefings(List<Briefing> briefings) {
+		this.briefings = briefings;
+	}
 }
