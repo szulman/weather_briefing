@@ -9,7 +9,7 @@ public class METARBriefing extends TextBriefing {
 	}
 
 	
-	public METARBriefing(File metarFile) {
-		super(metarFile);
+	public METARBriefing(String name, File metarFile) throws Exception {
+		super(name, metarFile);
 	}
 }

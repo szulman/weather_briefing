@@ -9,7 +9,7 @@ public class ForecastBriefing extends TextBriefing {
 	}
 
 	
-	public ForecastBriefing(File forecastFile) {
-		super(forecastFile);
+	public ForecastBriefing(String name, File forecastFile) throws Exception {
+		super(name, forecastFile);
 	}
 }

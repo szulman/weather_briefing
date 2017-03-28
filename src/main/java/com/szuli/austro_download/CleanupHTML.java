@@ -26,6 +26,9 @@ public class CleanupHTML {
 
 	
 	public static File cleanHTML(File in) throws Exception {
+		if (!isHTML(in)) {
+			return in;
+		}
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		dBuilder.setEntityResolver(new EntityResolver() {
@@ -49,5 +52,14 @@ public class CleanupHTML {
 		out.deleteOnExit();
 		FileUtils.write(out, rawContent, Charset.defaultCharset());
 		return out;
+	}
+	
+	/**
+	 * Makes a quick huristical check if the file is still HTML. The check is made based on the existence of the <html> tag in the file
+	 * @return
+	 */
+	public static boolean isHTML(File file) throws IOException {
+		String content = FileUtils.readFileToString(file, Charset.defaultCharset());
+		return content.contains("<html>");
 	}
 }

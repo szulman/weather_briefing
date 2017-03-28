@@ -1,12 +1,13 @@
 package com.szuli.austro_download.briefing;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class BriefingPack {
 
 	
-	private List<Briefing> briefings = new ArrayList<Briefing>();
+	private Map<String, Briefing> briefings = new HashMap<String, Briefing>();
 	
 	
 	public BriefingPack() {
@@ -15,18 +16,23 @@ public class BriefingPack {
 	
 	public void addBriefing(Briefing briefing) {
 		if (briefings == null) {
-			briefings = new ArrayList<Briefing>();
+			briefings = new HashMap<String, Briefing>();
 		}
-		briefings.add(briefing);
+		briefings.put(briefing.getName(), briefing);
 	}
 
 	
-	public List<Briefing> getBriefings() {
+	public Map<String, Briefing> getBriefings() {
 		return briefings;
 	}
 	
 	
-	public void setBriefings(List<Briefing> briefings) {
+	public Briefing getBriefing(String name) {
+		return briefings.get(name);
+	}
+
+	
+	public void setBriefings(Map<String, Briefing> briefings) {
 		this.briefings = briefings;
 	}
 }

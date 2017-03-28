@@ -8,7 +8,7 @@ public class GAFORBriefing extends PDFBriefing {
 	}
 
 
-	public GAFORBriefing(File gaforFile) {
-		super(gaforFile);
+	public GAFORBriefing(String name, File gaforFile) {
+		super(name, gaforFile);
 	}
 }

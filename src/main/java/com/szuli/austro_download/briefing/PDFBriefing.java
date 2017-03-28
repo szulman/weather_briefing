@@ -9,7 +9,7 @@ public class PDFBriefing extends Briefing {
 	}
 	
 
-	public PDFBriefing(File pdf) {
-		super(pdf);
+	public PDFBriefing(String name, File pdf) {
+		super(name, pdf);
 	}
 }

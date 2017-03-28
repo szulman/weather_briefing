@@ -4,6 +4,7 @@ import java.io.File;
 
 public abstract class Briefing {
 
+	private String name;
 	private File briefingFile;
 	
 	
@@ -11,7 +12,8 @@ public abstract class Briefing {
 	}
 	
 
-	public Briefing(File briefingFile) {
+	public Briefing(String name, File briefingFile) {
+		this.name = name;
 		this.briefingFile = briefingFile;
 	}
 	
@@ -23,5 +25,15 @@ public abstract class Briefing {
 	
 	public void setBriefingFile(File briefingFile) {
 		this.briefingFile = briefingFile;
+	}
+
+	
+	public String getName() {
+		return name;
+	}
+	
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 }

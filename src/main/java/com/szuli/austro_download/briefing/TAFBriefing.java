@@ -9,7 +9,7 @@ public class TAFBriefing extends TextBriefing {
 	}
 	
 	
-	public TAFBriefing(File tafFile) {
-		super(tafFile);
+	public TAFBriefing(String name, File tafFile) throws Exception {
+		super(name, tafFile);
 	}
 }

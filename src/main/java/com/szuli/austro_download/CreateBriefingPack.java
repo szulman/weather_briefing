@@ -74,79 +74,79 @@ public class CreateBriefingPack {
 	}
 
 
-	public TAFBriefing download_TAF(String baseURL) throws Exception {
-		return new TAFBriefing(download_METAR(baseURL).getBriefingFile());
+	public TAFBriefing download_TAF(String briefingName, String baseURL) throws Exception {
+		return new TAFBriefing(briefingName, download_METAR(briefingName, baseURL).getBriefingFile());
 	}
 	
 	
-	public METARBriefing download_METAR(String baseURL) throws Exception {
+	public METARBriefing download_METAR(String briefingName, String baseURL) throws Exception {
 		String url = baseURL + System.currentTimeMillis() / 1000;
 		HttpResponse<String> response = Unirest.get(url).asString();
 		String forecast = response.getBody();
-		File metarFile = File.createTempFile("austro_weather", "_metar.pdf");
+		File metarFile = File.createTempFile("austro_weather", "_.txt");
 		metarFile.deleteOnExit();
 		FileUtils.write(metarFile, forecast, Charset.defaultCharset());
-		return new METARBriefing(metarFile);
+		return new METARBriefing(briefingName, metarFile);
 	}
 	
 
 	public METARBriefing download_METAR_OESTERREICH_NORDOST() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=SA-OESTERREICH-NORDOST&tstamp=";
-		return download_METAR(url);
+		return download_METAR("METAR Austria North-East", url);
 	}
 	
 
 	public TAFBriefing download_TAF_OESTERREICH_NORDOST() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=TAF-OESTERREICH-NORDOST&tstamp=";
-		return download_TAF(url);
+		return download_TAF("TAF Austria North-East", url);
 	}
 	
 	
 	public METARBriefing download_METAR_Ungarn() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=SA-UNGARN&tstamp=";
-		return download_METAR(url);
+		return download_METAR("METAR Hungary", url);
 	}
 	
 	
 	public TAFBriefing download_TAF_Ungarn() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=TAF-UNGARN&tstamp=";
-		return download_TAF(url);
+		return download_TAF("TAF Hungary", url);
 	}
 	
 	
 	public METARBriefing download_METAR_OESTERREICH_SUD() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=SA-OESTERREICH-SUED&tstamp=";
-		return download_METAR(url);
+		return download_METAR("METAR Austria South", url);
 	}
 	
 
 	public TAFBriefing download_TAF_OESTERREICH_SUD() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=TAF-OESTERREICH-SUED&tstamp=";
-		return download_TAF(url);
+		return download_TAF("TAF Austria South", url);
 	}
 	
 
 	public TAFBriefing download_TAF_OESTERREICH_WEST() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=TAF-OESTERREICH-WEST&tstamp=";
-		return download_TAF(url);	
+		return download_TAF("TAF Austria West", url);	
 	}
 	
 	
 	public METARBriefing download_METAR_OESTERREICH_WEST() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=SA-OESTERREICH-WEST&tstamp=";
-		return download_METAR(url);	
+		return download_METAR("METAR Austria West", url);	
 	}
 	
 
 	public METARBriefing download_METAR_Slovenia() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=SA-SLOWENIEN&tstamp=";
-		return download_METAR(url);
+		return download_METAR("METAR Slovenia", url);
 	}
 	
 	
 	public TAFBriefing download_TAF_Slovenia() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=TAF-SLOWENIEN&tstamp=";
-		return download_TAF(url);
+		return download_TAF("TAF Slovenia", url);
 	}
 	
 	
@@ -155,7 +155,8 @@ public class CreateBriefingPack {
 	 */
 	public ForecastBriefing downloadTextForecastDanube() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/bin/medasdb.php?flreq=FXOS41&tstamp=" + System.currentTimeMillis() / 1000;
-		return new ForecastBriefing(download_METAR(url).getBriefingFile());
+		String briefingName = "Forecast Danube Area";
+		return new ForecastBriefing(briefingName, download_METAR(briefingName, url).getBriefingFile());
 	}
 	
 	
@@ -175,7 +176,7 @@ public class CreateBriefingPack {
 			fos.write(inByte);
 		gaforIS.close();
 		fos.close();
-		return new GAFORBriefing(gaforFile);
+		return new GAFORBriefing("GAFOR Austria", gaforFile);
 	}
 
 	
