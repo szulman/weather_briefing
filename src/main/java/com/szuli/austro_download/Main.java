@@ -8,13 +8,12 @@ public class Main {
 	
 	
 	public void start() {
-		/*try {
-			PDFExport pdf = new PDFExport();
-			pdf.text2PDF(new File("METAR_Hungary.txt"), new File("hello.pdf"));
-			//	pdf.html2PDF(new File("METAR_Hungary.txt"), new File("hello.pdf"));
+		CreateBriefingPack c = new CreateBriefingPack();
+		try {
+			c.createBriefingPack();
 		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
+			System.err.println(e.getMessage());
+		}
 	}
 	
 	
