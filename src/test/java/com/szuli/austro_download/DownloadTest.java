@@ -21,7 +21,7 @@ public class DownloadTest {
 	
 	@Test
 	public void testLogin() {
-		Download d = new Download();
+		CreateBriefingPack d = new CreateBriefingPack();
 		try {
 			String authToken = d.login();
 			Assert.assertTrue(authToken.length() > 5);

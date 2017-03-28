@@ -11,7 +11,7 @@ public class Main {
 	
 	public void start() {
 		try {
-			PDFOutput pdf = new PDFOutput();
+			PDFExport pdf = new PDFExport();
 			pdf.text2PDF(new File("METAR_Hungary.txt"), new File("hello.pdf"));
 			//	pdf.html2PDF(new File("METAR_Hungary.txt"), new File("hello.pdf"));
 		} catch (Exception e) {

@@ -18,9 +18,9 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
 
-public class PDFOutput {
+public class PDFExport {
 
-	public PDFOutput() {
+	public PDFExport() {
 	}
 
 	public void text2PDF(File in, File out) throws Exception {
