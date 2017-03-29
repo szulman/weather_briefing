@@ -12,7 +12,9 @@ password=mypassword
 #Usage
 
 1. Navigate to the bin folder and execute **austro_download.bat**
-1. Your briefing file is generated in the folder bin/briefings
+1. A PDF file containing your briefing is generated in the folder bin/briefings
+
+
 
 #License
 

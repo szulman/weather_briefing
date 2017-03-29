@@ -1,7 +1,8 @@
 
 
 ==============================================================================
-This briefing pack is not intended to replace the Austro Control Weather Service.
+This software as well the generated briefing packs are not intended to 
+replace the Austro Control Weather Service.
 Your use of this pack is at your sole risk. Information during the download might
 not be lost or corrupted due to network issues. We do not guarantee accurancy and
 comprehensiveness of the information provided.

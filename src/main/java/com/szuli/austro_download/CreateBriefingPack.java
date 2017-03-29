@@ -58,7 +58,9 @@ public class CreateBriefingPack {
 		if (!briefingDir.exists()) {
 			briefingDir.mkdir();
 		}
-		PDFExport.briefingPack2PDF(bp, new File(briefingDir + "/briefing_pack_" + timeStamp + ".pdf"));
+		File pdf = new File(briefingDir + "/briefing_pack_" + timeStamp + ".pdf");
+		PDFExport.briefingPack2PDF(bp, pdf);
+		System.out.println("Generated briefing pack --> " + pdf.getAbsolutePath());
 		return bp;
 	}
 
@@ -66,7 +68,7 @@ public class CreateBriefingPack {
 	public BriefingPack downloadBriefingPack() throws Exception {
 		BriefingPack bp = new BriefingPack();
 		System.out.println("=============================");
-		System.out.println("  Creating Weather Briefing  ");
+		System.out.println("  Weather Briefing (v0.1.0) ");
 		System.out.println("=============================\n\n");
 		String authToken = login();
 		if (authToken != null && !authToken.trim().equals("")) {

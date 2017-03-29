@@ -43,11 +43,9 @@ public class CleanupHTML {
 		});
 		Document doc = dBuilder.parse(in);
 		doc.getDocumentElement().normalize();
-		System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
 		NodeList metarBodyList = doc.getElementsByTagName("p");
 		Node metarBody = metarBodyList.item(0);
 		String rawContent = metarBody.getTextContent();
-		System.out.println("METARS --> " + rawContent);
 		File out = File.createTempFile("austro_weather", "_clean_html.txt");
 		out.deleteOnExit();
 		FileUtils.write(out, rawContent, Charset.defaultCharset());
