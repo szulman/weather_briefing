@@ -4,22 +4,26 @@
 1. Unzip austro_download.zip in an empty folder
 1. in in bin/config.txt, adapt the username/password to be used to access the services provided by [Austrocontrol Flugwetter](https://www.austrocontrol.at/flugwetter):
 
-```sh
-username=myuser
-password=mypassword
-```
+![config](doc/config.png)
+
 
 #Usage
 
 1. Navigate to the bin folder and execute **austro_download.bat**
 1. A PDF file containing your briefing is generated in the folder bin/briefings
 
+Sample PDF:
 
+![sample_pdf](doc/briefing_sample.png)
 
 #License
 
-The software is licensed under LGPL 3.0. 
-If you are a developer, feel free to fork & create pull requests for improvements. 
+The software is licensed under LGPL 3.0.
+
+#Contribute 
+
+If you are not only a pilot, but also a developer, feel free to fork & create pull requests for improvements. 
+
 
 #Warranty
 
