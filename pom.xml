@@ -96,6 +96,9 @@
 					<assembleDirectory>${project.build.directory}/austro_download</assembleDirectory>
 					<repositoryName>lib</repositoryName>
 					<repositoryLayout>flat</repositoryLayout>
+					<configurationDirectory>config</configurationDirectory>
+					<copyConfigurationDirectory>true</copyConfigurationDirectory>
+					<includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath>
 				</configuration>
 				<executions>
 					<execution>
