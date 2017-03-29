@@ -26,6 +26,8 @@ import com.mashape.unirest.http.Unirest;
 import com.szuli.austro_download.briefing.BriefingPack;
 import com.szuli.austro_download.briefing.ForecastBriefing;
 import com.szuli.austro_download.briefing.GAFORBriefing;
+import com.szuli.austro_download.briefing.HeaderText;
+import com.szuli.austro_download.briefing.LegalText;
 import com.szuli.austro_download.briefing.METARBriefing;
 import com.szuli.austro_download.briefing.TAFBriefing;
 import com.szuli.austro_download.config.ConfigFile;
@@ -39,11 +41,12 @@ import com.szuli.austro_download.config.ConfigFile;
 public class CreateBriefingPack {
 
 	private String authToken = "";
-
+	public static final String BRIEFING_DIR = "briefings/";
+	
 	public CreateBriefingPack() {
 	}
 
-	public void createBriefingPack() throws Exception {
+	public BriefingPack createBriefingPack() throws Exception {
 		//download reports
 		BriefingPack bp = downloadBriefingPack();
 		
@@ -51,7 +54,12 @@ public class CreateBriefingPack {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 		String timeStamp = format.format(new Date(System.currentTimeMillis()));
 		//generate PDF output
-		PDFExport.briefingPack2PDF(bp, new File("briefing_pack" + timeStamp + ".pdf"));
+		File briefingDir = new File(BRIEFING_DIR);
+		if (!briefingDir.exists()) {
+			briefingDir.mkdir();
+		}
+		PDFExport.briefingPack2PDF(bp, new File(briefingDir + "/briefing_pack_" + timeStamp + ".pdf"));
+		return bp;
 	}
 
 	
@@ -62,6 +70,8 @@ public class CreateBriefingPack {
 		System.out.println("=============================\n\n");
 		String authToken = login();
 		if (authToken != null && !authToken.trim().equals("")) {
+			bp.addBriefing(new HeaderText());
+			bp.addBriefing(new LegalText());
 			bp.addBriefing(downloadGAFOR(authToken));
 			bp.addBriefing(downloadTextForecastDanube());
 			bp.addBriefing(download_METAR_OESTERREICH_NORDOST());
@@ -75,7 +85,7 @@ public class CreateBriefingPack {
 			bp.addBriefing(download_TAF_Ungarn());
 			bp.addBriefing(download_TAF_Slovenia());
 		} else {
-			throw new Exception("Couldn't login to https://www.austrocontrol.at/flugwetter/");
+			throw new Exception("Couldn't login to https://www.austrocontrol.at/flugwetter/. Check you username/password in the config.txt file.");
 		}
 		return bp;
 	}

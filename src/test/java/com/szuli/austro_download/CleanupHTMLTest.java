@@ -16,7 +16,6 @@ public class CleanupHTMLTest {
 		try {
 			File cleanFile = CleanupHTML.cleanHTML(new File("METAR.html"));
 			String content = FileUtils.readFileToString(cleanFile, Charset.defaultCharset());
-			System.out.println("clean HTML --> " + content);
 			Assert.assertFalse(content.contains("<"));
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -10,6 +10,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.szuli.austro_download.briefing.Briefing;
+import com.szuli.austro_download.briefing.LegalText;
 import com.szuli.austro_download.briefing.BriefingPack;
 import com.szuli.austro_download.config.ConfigFile;
 
@@ -37,7 +38,8 @@ public class CreateBriefingPackTest {
 	public void createBriefingPack() {
 		CreateBriefingPack c = new CreateBriefingPack();
 		try {
-			c.createBriefingPack();
+			BriefingPack bp = c.createBriefingPack();
+			Assert.assertNotNull(bp.getBriefing(LegalText.NAME));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail();

@@ -1,0 +1,14 @@
+
+
+==============================================================================
+This briefing pack is not intended to replace the Austro Control Weather Service.
+Your use of this pack is at your sole risk. Information during the download might
+not be lost or corrupted due to network issues. We do not guarantee accurancy and
+comprehensiveness of the information provided.
+You should always use an official aeronautical documentation when preparing and
+performing a flight.
+The software creating this briefing pack is provided 'as-is', without any 
+implied warranty. In no event will the authors be held liable for any damages 
+arising from the use of this software
+==============================================================================
+

@@ -1,13 +1,14 @@
 package com.szuli.austro_download.briefing;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 
 public class BriefingPack {
 
 	
-	private Map<String, Briefing> briefings = new HashMap<String, Briefing>();
+	private LinkedHashMap<String, Briefing> briefings = new LinkedHashMap<String, Briefing>();
 	
 	
 	public BriefingPack() {
@@ -16,7 +17,7 @@ public class BriefingPack {
 	
 	public void addBriefing(Briefing briefing) {
 		if (briefings == null) {
-			briefings = new HashMap<String, Briefing>();
+			briefings = new LinkedHashMap<String, Briefing>();
 		}
 		briefings.put(briefing.getName(), briefing);
 	}
@@ -32,7 +33,7 @@ public class BriefingPack {
 	}
 
 	
-	public void setBriefings(Map<String, Briefing> briefings) {
+	public void setBriefings(LinkedHashMap<String, Briefing> briefings) {
 		this.briefings = briefings;
 	}
 }

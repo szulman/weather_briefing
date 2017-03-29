@@ -62,8 +62,8 @@ public class PDFExport {
 			BufferedReader br = new BufferedReader(new FileReader(textBriefing.getBriefingFile()));
 			String line;
 			Paragraph p;
-			Font normal = new Font(FontFamily.TIMES_ROMAN, 12);
-			Font bold = new Font(FontFamily.TIMES_ROMAN, 12, Font.BOLD);
+			Font normal = new Font(FontFamily.TIMES_ROMAN, 10);
+			Font bold = new Font(FontFamily.TIMES_ROMAN, 10, Font.BOLD);
 			boolean title = true;
 			while ((line = br.readLine()) != null) {
 				p = new Paragraph(line, title ? bold : normal);
