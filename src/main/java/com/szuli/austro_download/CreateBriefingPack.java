@@ -205,8 +205,8 @@ public class CreateBriefingPack {
 		// LOGIN
 		Map<String, Object> loginData = new HashMap<String, Object>();
 		loginData.put("lang", "en");
-		loginData.put("username", ConfigFile.getInstance().getUsername());
-		loginData.put("password", ConfigFile.getInstance().getPassword());
+		loginData.put("username", ConfigFile.getInstance().getAustrocontrol_username());
+		loginData.put("password", ConfigFile.getInstance().getAustrocontrol_password());
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Content-Type", "application/x-www-form-urlencoded");
 		headers.put("Referer",
