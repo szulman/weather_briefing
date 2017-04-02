@@ -72,20 +72,23 @@ public class CreateBriefingPack {
 		System.out.println("=============================\n\n");
 		String authToken = login();
 		if (authToken != null && !authToken.trim().equals("")) {
+			ConfigFile conf = ConfigFile.getInstance();
 			bp.addBriefing(new HeaderText());
 			bp.addBriefing(new LegalText());
-			bp.addBriefing(downloadGAFOR(authToken));
-			bp.addBriefing(downloadTextForecastDanube());
-			bp.addBriefing(download_METAR_OESTERREICH_NORDOST());
-			bp.addBriefing(download_METAR_OESTERREICH_SUD());
-			bp.addBriefing(download_METAR_OESTERREICH_WEST());
-			bp.addBriefing(download_METAR_Ungarn());
-			bp.addBriefing(download_METAR_Slovenia());
-			bp.addBriefing(download_TAF_OESTERREICH_NORDOST());
-			bp.addBriefing(download_TAF_OESTERREICH_SUD());
-			bp.addBriefing(download_TAF_OESTERREICH_WEST());
-			bp.addBriefing(download_TAF_Ungarn());
-			bp.addBriefing(download_TAF_Slovenia());
+			if (conf.isDownload_gafor_austria()) bp.addBriefing(downloadGAFOR());
+			if (conf.isDownload_text_forecast_austria()) bp.addBriefing(downloadTextForecastDanube());
+			if (conf.isDownload_metar_austria_northeast()) bp.addBriefing(download_METAR_OESTERREICH_NORDOST());
+			if (conf.isDownload_metar_austria_south()) bp.addBriefing(download_METAR_OESTERREICH_SUD());
+			if (conf.isDownload_metar_austria_west()) bp.addBriefing(download_METAR_OESTERREICH_WEST());
+			if (conf.isDownload_metar_hungary()) bp.addBriefing(download_METAR_Ungarn());
+			if (conf.isDownload_metar_slovenia()) bp.addBriefing(download_METAR_Slovenia());
+			if (conf.isDownload_taf_austria_northeast()) bp.addBriefing(download_TAF_OESTERREICH_NORDOST());
+			if (conf.isDownload_taf_austria_south()) bp.addBriefing(download_TAF_OESTERREICH_SUD());
+			if (conf.isDownload_taf_austria_west()) bp.addBriefing(download_TAF_OESTERREICH_WEST());
+			if (conf.isDownload_taf_hungary()) bp.addBriefing(download_TAF_Ungarn());
+			if (conf.isDownload_taf_slovenia()) bp.addBriefing(download_TAF_Slovenia());
+		
+			
 		} else {
 			throw new Exception("Couldn't login to https://www.austrocontrol.at/flugwetter/. Check you username/password in the config.txt file.");
 		}
@@ -171,20 +174,25 @@ public class CreateBriefingPack {
 	/**
 	 * Download GAFOR as PDF from Austro Control
 	 */
-	public GAFORBriefing downloadGAFOR(String authToken) throws Exception {
+	public GAFORBriefing downloadGAFOR() throws Exception {
 		String url = "https://www.austrocontrol.at/flugwetter/products/chartloop/gafor.pdf" + "?mtime="
 				+ System.currentTimeMillis() / 1000 + "&auth_tkt=" + authToken;
+		String briefingName = "GAFOR_Austria";
+		return downloadDiagram(briefingName, url);
+	}
+	
+	public GAFORBriefing downloadDiagram(String briefingName, String url) throws Exception {
 		HttpResponse<InputStream> gafor = Unirest.get(url).asBinary();
-		File gaforFile = File.createTempFile("austro_weather", "_gafor.pdf");
-		gaforFile.deleteOnExit();
-		FileOutputStream fos = new FileOutputStream(gaforFile);
+		File diagram = File.createTempFile("austro_weather", "_gafor.pdf");
+		diagram.deleteOnExit();
+		FileOutputStream fos = new FileOutputStream(diagram);
 		int inByte;
 		InputStream gaforIS = gafor.getBody();
 		while ((inByte = gaforIS.read()) != -1)
 			fos.write(inByte);
 		gaforIS.close();
 		fos.close();
-		return new GAFORBriefing("GAFOR Austria", gaforFile);
+		return new GAFORBriefing(briefingName, diagram);
 	}
 
 	public String login() throws Exception {

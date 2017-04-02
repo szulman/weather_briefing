@@ -20,6 +20,8 @@ public class ConfigFile {
 	// #=========================
 	private boolean download_aup;
 
+	private boolean download_text_forecast_austria;
+	
 	// #=========================
 	// #METARs
 	// #=========================
@@ -123,6 +125,11 @@ public class ConfigFile {
 			// #=========================
 			download_aup = prop.getProperty("download_aup").toLowerCase().equals("yes");
 
+			//#=========================
+			//#TEXT FORECASTS
+			//#=========================
+			download_text_forecast_austria = prop.getProperty("download_text_forecast_austria ").toLowerCase().equals("yes");
+			
 			// #=========================
 			// #METARs
 			// #=========================
@@ -252,5 +259,9 @@ public class ConfigFile {
 
 	public boolean isDownload_swc_alps() {
 		return download_swc_alps;
+	}
+
+	public boolean isDownload_text_forecast_austria() {
+		return download_text_forecast_austria;
 	}
 }

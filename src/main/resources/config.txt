@@ -13,6 +13,12 @@ download.aup=yes
 
 
 #=========================
+#TEXT FORECASTS
+#=========================
+download.text_forecast.austria=yes
+
+
+#=========================
 #METARs
 #=========================
 download.metar.austria.northeast=yes
